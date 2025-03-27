@@ -9,8 +9,7 @@ from pytorch_lightning.callbacks.model_checkpoint import ModelCheckpoint
 # Dodaj do bezpiecznych globalnych klas
 torch.serialization.add_safe_globals([ModelCheckpoint])
 
-# Ścieżka do pliku .ckpt
-model_path = "./sd-v1-4-full-ema.ckpt"  # Zmień na ścieżkę do swojego pliku .ckpt
+model_path = "./sd-v1-4-full-ema.ckpt"
 
 
 # Funkcja do załadowania modelu .ckpt
@@ -18,12 +17,12 @@ def load_ckpt_model(ckpt_path):
     # Załaduj model z pliku .ckpt
     checkpoint = torch.load(ckpt_path, map_location="cpu", weights_only=False)
 
-    # Załaduj odpowiednie komponenty modelu
+    # Ładowanie komponentów modelu
     model = StableDiffusionPipeline.from_pretrained('CompVis/stable-diffusion-v1-4', local_files_only=True)
 
     # Załaduj wagę do odpowiednich komponentów (model i konfiguracja)
     model.unet.load_state_dict(checkpoint['state_dict'], strict=False)
-    model.to("mps")  # Jeśli masz GPU, przenieś model na GPU
+    model.to("cuda")  # "cpu", "mps"
     return model
 
 
